@@ -198,26 +198,28 @@ public class CommonSteps {
             if (currentAccount.isPresent()) {
 
                 String service = currentAccount.get().getService();
-                Credentials current = Credentials.valueOf(service.toUpperCase());
+                try {
+                    Credentials current = Credentials.valueOf(service.toUpperCase());
 
-                switch (current) {
-                    case DROPBOX:
-                        service = "DropBox";
-                        break;
-                    case SALESFORCE:
-                        service = "Salesforce";
-                        break;
-                    case TWITTER:
-                        service = "Twitter";
-                        break;
-                    case S3:
-                        return; //TODO: skip for now
-                    case SLACK:
-                        service = "Slack";
-                        break;
-                    default:
-                        return; //skip for other cred
-                }
+                    switch (current) {
+                        case DROPBOX:
+                            service = "DropBox";
+                            break;
+                        case SALESFORCE:
+                            service = "Salesforce";
+                            break;
+                        case TWITTER:
+                            service = "Twitter";
+                            break;
+                        case S3:
+                            return; //TODO: skip for now
+                        case SLACK:
+                            service = "Slack";
+                            break;
+                        default:
+                            return; //skip for other cred
+                    }
+
 
                 //type
                 tmpList.set(0, service);
@@ -231,6 +233,8 @@ public class CommonSteps {
                 log.trace("Inserting: " + tmpList.toString());
                 oneAccountList.add(new ArrayList<>(tmpList));
                 log.trace("Current values in list list: " + oneAccountList.toString());
+                } catch (Exception ex) { ;
+                }
             }
         });
 
