@@ -25,6 +25,7 @@ import io.fabric8.kubernetes.api.model.KubernetesList;
 import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.kubernetes.api.model.ServiceAccount;
 import io.fabric8.kubernetes.api.model.apiextensions.CustomResourceDefinition;
+import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.utils.Serialization;
 import io.fabric8.openshift.api.model.ImageStream;
 import io.fabric8.openshift.api.model.ImageStreamList;
@@ -148,6 +149,8 @@ public class SyndesisTemplate {
             OpenShiftUtils.client().customResourceDefinitions().create(crd);
         } catch (IOException ex) {
             throw new IllegalArgumentException("Unable to load CRD", ex);
+        } catch (KubernetesClientException kce) {
+            // Kubernetes client exception when the CRD already exists
         }
     }
 

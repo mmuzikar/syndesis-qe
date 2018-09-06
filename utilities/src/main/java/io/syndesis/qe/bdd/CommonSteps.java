@@ -17,7 +17,6 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.openshift.api.model.Build;
 import io.syndesis.common.model.connection.Connection;
 import io.syndesis.qe.Component;
@@ -39,11 +38,6 @@ public class CommonSteps {
     public void cleanNamespace() {
         OpenShiftUtils.client().apps().statefulSets().inNamespace(TestConfiguration.openShiftNamespace()).delete();
         OpenShiftUtils.client().extensions().deployments().inNamespace(TestConfiguration.openShiftNamespace()).delete();
-        try {
-            OpenShiftUtils.client().customResourceDefinitions().delete();
-        } catch (KubernetesClientException ex) {
-            // Probably user does not have permissions to delete.. a nice exception will be printed when deploying
-        }
         OpenShiftUtils.client().serviceAccounts().withName("syndesis-oauth-client").delete();
         OpenShiftUtils.getInstance().cleanAndAssert();
         OpenShiftUtils.xtf().getTemplates().forEach(OpenShiftUtils.xtf()::deleteTemplate);
