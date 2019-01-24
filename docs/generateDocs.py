@@ -19,7 +19,7 @@ ansig
 annotation | signature 
 ---
 """
-STYLE = "file"
+STYLE = "compact"
 
 OUTPUTDIR = "docs/"
 
