@@ -1,0 +1,12 @@
+export REGISTRY=
+export REGISTRY_NAMESPACE=
+export SERVER=
+export META=
+export UI=
+export S2I=
+export OPERATOR=
+export OAUTH_PROXY=registry.access.redhat.com/openshift3/oauth-proxy:v3.10.45
+export PROMETHEUS=registry.access.redhat.com/openshift3/prometheus:v3.9.25
+export OAUTH_PROXY_TAG=v1.1.0
+export PROMETHEUS_TAG=v2.1.0
+export TAG=

@@ -13,6 +13,8 @@ import io.syndesis.qe.templates.FtpTemplate;
 import io.syndesis.qe.templates.HTTPEndpointsTemplate;
 import io.syndesis.qe.templates.IrcTemplate;
 import io.syndesis.qe.templates.KafkaTemplate;
+import io.syndesis.qe.templates.KuduRestAPITemplate;
+import io.syndesis.qe.templates.KuduTemplate;
 import io.syndesis.qe.templates.MysqlTemplate;
 import io.syndesis.qe.utils.OpenShiftUtils;
 import io.syndesis.qe.wait.OpenShiftWaitUtils;
@@ -34,6 +36,26 @@ public class OpenshiftValidationSteps {
     @Given("^deploy FTP server$")
     public void deployFTPServer() {
         FtpTemplate.deploy();
+    }
+
+    @Given("^deploy Kudu rest API$")
+    public void deployKuduRestAPI() {
+        KuduRestAPITemplate.deploy();
+    }
+
+    @Given("^deploy Kudu server$")
+    public void deployKuduServer() {
+        KuduTemplate.deploy();
+    }
+
+    @Given("^clean Kudu rest API$")
+    public void cleanKuduRestAPI() {
+        KuduRestAPITemplate.cleanUp();
+    }
+
+    @Given("^clean Kudu server$")
+    public void cleanKuduServer() {
+        KuduTemplate.cleanUp();
     }
 
     @Given("^clean FTP server$")
@@ -79,5 +101,4 @@ public class OpenshiftValidationSteps {
             fail(e.getMessage());
         }
     }
-
 }

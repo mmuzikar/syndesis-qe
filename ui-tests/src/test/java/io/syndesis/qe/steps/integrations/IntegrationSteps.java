@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.fail;
 import static com.codeborne.selenide.Condition.visible;
 
 import org.assertj.core.api.Condition;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.codeborne.selenide.SelenideElement;
 
@@ -25,6 +26,7 @@ import io.syndesis.qe.pages.integrations.Integrations;
 import io.syndesis.qe.pages.integrations.editor.add.steps.DataMapper;
 import io.syndesis.qe.pages.integrations.importt.ImportIntegration;
 import io.syndesis.qe.pages.integrations.summary.Details;
+import io.syndesis.qe.steps.CommonSteps;
 import io.syndesis.qe.utils.ExportedIntegrationJSONUtil;
 import io.syndesis.qe.utils.OpenShiftUtils;
 import io.syndesis.qe.utils.TestUtils;
@@ -42,6 +44,9 @@ public class IntegrationSteps {
     private DataMapper dataMapper = new DataMapper();
     private ImportIntegration importIntegration = new ImportIntegration();
 
+    @Autowired
+    private CommonSteps commonSteps;
+
     @When("^select the \"([^\"]*)\" integration.*$")
     public void selectIntegration(String itegrationName) {
         integrations.goToIntegrationDetail(itegrationName);
@@ -54,6 +59,7 @@ public class IntegrationSteps {
 
     @Then("^Integration \"([^\"]*)\" is present in integrations list$")
     public void expectIntegrationPresent(String name) {
+        commonSteps.navigateTo("Integrations");
         log.info("Verifying integration {} is present", name);
         TestUtils.sleepForJenkinsDelayIfHigher(4);
         assertThat(integrations.isIntegrationPresent(name)).isTrue();
@@ -72,6 +78,7 @@ public class IntegrationSteps {
      */
     @Then("^wait until integration \"([^\"]*)\" gets into \"([^\"]*)\" state$")
     public void waitForIntegrationState(String integrationName, String integrationStatus) {
+        commonSteps.navigateTo("Integrations");
         SelenideElement integration = integrations.getIntegration(integrationName);
         TestUtils.sleepForJenkinsDelayIfHigher(10);
         assertThat(TestUtils.waitForEvent(
@@ -88,6 +95,7 @@ public class IntegrationSteps {
      */
     @Then("^wait until integration \"([^\"]*)\" starting status gets into \"([^\"]*)\" state$")
     public void waitForIntegrationStartingState(String integrationName, String integrationStatus) {
+        commonSteps.navigateTo("Integrations");
         SelenideElement integration = integrations.getIntegration(integrationName);
         TestUtils.sleepForJenkinsDelayIfHigher(10);
         assertThat(TestUtils.waitForEvent(
@@ -102,7 +110,6 @@ public class IntegrationSteps {
     public void clickOnAllKebabMenus() {
         integrations.checkAllIntegrationsKebabButtons();
     }
-
 
     @And("^export the integrat?ion$")
     public void exportIntegration() throws InterruptedException {
@@ -131,7 +138,6 @@ public class IntegrationSteps {
         OpenShiftWaitUtils.assertEventually("Pod with name " + integartionPodName + "is still running.",
                 OpenShiftWaitUtils.areNoPodsPresent(integartionPodName), 1000, 5 * 60 * 1000);
     }
-
 
     @And("^.*check that data bucket \"([^\"]*)\" is available$")
     public void checkPreviousDataBuckets(String bucket) {
@@ -167,7 +173,6 @@ public class IntegrationSteps {
             }
         }
     }
-
 
     @Then("^.*validate that logs of integration \"([^\"]*)\" contains string \"([^\"]*)\"$")
     public void checkThatLogsContain(final String integrationName, final String text) {
@@ -283,5 +288,4 @@ public class IntegrationSteps {
     public void editIntegration() throws Throwable {
         detailPage.editIntegration();
     }
-
 }

@@ -28,7 +28,7 @@ Feature: Integration - DB to DB
 
       # select salesforce connection as 'from' point
     When select the "PostgresDB" connection
-    And select "Periodic SQL Invocation" integration action
+    And select "Periodic SQL invocation" integration action
     #Then check visibility of page "Periodic SQL Invocation"
     Then check "Next" button is "Disabled"
     Then fill in periodic query input with "SELECT * FROM CONTACT" value
@@ -44,7 +44,13 @@ Feature: Integration - DB to DB
     Then fill in invoke query input with "UPDATE TODO SET completed=1 WHERE TASK = :#TASK" value
     And click on the "Next" button
 
-      # add data mapper step
+
+    # add split step
+    Then check visibility of page "Add to Integration"
+    When add integration step on position "0"
+    And select "Split" integration step
+
+    # add data mapper step
     Then check visibility of page "Add to Integration"
     When add integration step on position "0"
     And select "Data Mapper" integration step
@@ -72,7 +78,7 @@ Feature: Integration - DB to DB
 
       # select salesforce connection as 'from' point
     When select the "PostgresDB" connection
-    And select "Periodic SQL Invocation" integration action
+    And select "Periodic SQL invocation" integration action
     #Then check visibility of page "Periodic SQL Invocation"
     #@wip this (disabled) functionality is not yet available
     Then check "Next" button is "Disabled"
@@ -89,9 +95,14 @@ Feature: Integration - DB to DB
     Then fill in invoke query input with "INSERT INTO TODO(task, completed) VALUES (:#TASK, 2)" value
     And click on the "Next" button
 
-      # add data mapper step
+      # add split step
     Then check visibility of page "Add to Integration"
     When add integration step on position "0"
+    And select "Split" integration step
+
+      # add data mapper step
+    Then check visibility of page "Add to Integration"
+    When add integration step on position "1"
     And select "Data Mapper" integration step
     Then check visibility of data mapper ui
     And create mapping from "first_name" to "TASK"
@@ -122,7 +133,7 @@ Feature: Integration - DB to DB
 
       # select salesforce connection as 'from' point
     When select the "PostgresDB" connection
-    And select "Periodic SQL Invocation" integration action
+    And select "Periodic SQL invocation" integration action
     #Then check visibility of page "Periodic SQL Invocation"
     #@wip this (disabled) functionality is not yet available
     Then check "Next" button is "Disabled"
@@ -139,9 +150,14 @@ Feature: Integration - DB to DB
     Then fill in invoke query input with "DELETE FROM TODO WHERE task = :#TASK" value
     And click on the "Next" button
 
-    # add data mapper step
+    # add split step
     Then check visibility of page "Add to Integration"
     When add integration step on position "0"
+    And select "Split" integration step
+
+    # add data mapper step
+    Then check visibility of page "Add to Integration"
+    When add integration step on position "1"
     And select "Data Mapper" integration step
     Then check visibility of data mapper ui
 #    And sleep for "16000" ms
@@ -174,7 +190,7 @@ Feature: Integration - DB to DB
 
       # select salesforce connection as 'from' point
     When select the "PostgresDB" connection
-    And select "Periodic SQL Invocation" integration action
+    And select "Periodic SQL invocation" integration action
     #Then check visibility of page "Periodic SQL Invocation"
     #@wip this (disabled) functionality is not yet available
     Then check "Next" button is "Disabled"
@@ -190,9 +206,14 @@ Feature: Integration - DB to DB
     And select "add_lead" from "procedureName" dropdown
     And click on the "Next" button
 
-      # add data mapper step
+    # add split step
     Then check visibility of page "Add to Integration"
     When add integration step on position "0"
+    And select "Split" integration step
+
+      # add data mapper step
+    Then check visibility of page "Add to Integration"
+    When add integration step on position "1"
     And select "Data Mapper" integration step
     Then check visibility of data mapper ui
 
@@ -228,7 +249,7 @@ Feature: Integration - DB to DB
 
       # select salesforce connection as 'from' point
     When select the "PostgresDB" connection
-    And select "Periodic SQL Invocation" integration action
+    And select "Periodic SQL invocation" integration action
     #Then check visibility of page "Periodic SQL Invocation"
     #@wip this (disabled) functionality is not yet available
     Then check "Next" button is "Disabled"

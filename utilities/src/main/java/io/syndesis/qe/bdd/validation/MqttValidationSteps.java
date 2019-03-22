@@ -1,6 +1,15 @@
 package io.syndesis.qe.bdd.validation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+
+import java.io.IOException;
+
 import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.client.LocalPortForward;
 import io.syndesis.qe.utils.OpenShiftUtils;
@@ -8,12 +17,6 @@ import io.syndesis.qe.utils.TestUtils;
 import io.syndesis.qe.utils.mqtt.MqttUtils;
 import io.syndesis.qe.utils.mqtt.Receiver;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-
-import java.io.IOException;
-
 
 @Slf4j
 public class MqttValidationSteps {
@@ -29,8 +32,7 @@ public class MqttValidationSteps {
         MqttClient receiverClient = null;
         try {
             portForward();
-            // give port forward some time
-            TestUtils.sleepIgnoreInterrupt(2000);
+
             //create receiver
             receiverClient = mqttUtils.createReceiver("receiver_1", receiverTopic);
 
@@ -39,10 +41,8 @@ public class MqttValidationSteps {
 
             //give it some short time for delivery
             TestUtils.sleepIgnoreInterrupt(4000);
-
         } catch (MqttException e) {
-            e.printStackTrace();
-            Assertions.fail("Mqtt Exception was thrown during message transfer");
+            fail("Mqtt Exception was thrown during message transfer", e);
         } finally {
             //close receiver
             mqttUtils.closeClient(receiverClient);
@@ -52,9 +52,25 @@ public class MqttValidationSteps {
         }
 
         //check flag
-        Assertions.assertThat(Receiver.RECEIVED_FLAG).as("Message was not received!!!")
+        assertThat(Receiver.RECEIVED_FLAG).as("Message was not received!")
                 .isEqualTo(1);
+    }
 
+    @When("^send mqtt message to \"([^\"]*)\" topic$")
+    public void sendMqttMessage(String senderTopic) {
+
+        try {
+            portForward();
+
+            //send message via client
+            mqttUtils.sendMessage("{\"key\" : 1,\"value\" : \"FirstValue\"}", senderTopic);
+
+            //give it some short time for delivery
+            TestUtils.sleepIgnoreInterrupt(4000);
+        } finally {
+            //close mqtt port
+            portClose();
+        }
     }
 
     private void portForward() {
@@ -63,6 +79,8 @@ public class MqttValidationSteps {
             Pod pod = OpenShiftUtils.xtf().getAnyPod("app", "broker-amq");
             log.info("POD NAME: *{}*", pod.getMetadata().getName());
             mqttLocalPortForward = OpenShiftUtils.portForward(pod, 1883, 1883);
+            //give it time to get ready
+            TestUtils.sleepIgnoreInterrupt(2000);
         }
     }
 
@@ -71,8 +89,7 @@ public class MqttValidationSteps {
             try {
                 mqttLocalPortForward.close();
             } catch (IOException e) {
-                e.printStackTrace();
-                log.error("Error while closing mqtt port forward.");
+                log.error("Error while closing mqtt port forward.", e);
             }
         }
     }

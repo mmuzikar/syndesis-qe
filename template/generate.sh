@@ -20,26 +20,19 @@ BASE_DIR=$(dirname "$(readlink -f "$0")")
 
 VARS="SERVER META UI S2I OPERATOR OAUTH_PROXY PROMETHEUS TAG OAUTH_PROXY_TAG PROMETHEUS_TAG"
 
-if [ -z "${OAUTH_PROXY}" ]; then
-	OAUTH_PROXY=registry.access.redhat.com/openshift3/oauth-proxy:v3.10.45
-fi
+# If the properties are defined, don't source
+[[ ! "z${OPERATOR}" == "z" ]] || source "${BASE_DIR}"/vars
 
-if [ -z "${PROMETHEUS}" ]; then
-	PROMETHEUS=registry.access.redhat.com/openshift3/prometheus:v3.9.25
-fi
-
-if [ -z "${OAUTH_PROXY_TAG}" ]; then
-	OAUTH_PROXY_TAG=v1.1.0
-fi
-
-if [ -z "${PROMETHEUS_TAG}" ]; then
-	PROMETHEUS_TAG=v2.1.0
-fi
-
-cp -f "${BASE_DIR}"/prod.template.yml /tmp/prod.yml
+cp -f "${BASE_DIR}"/prod.template.yml /tmp/prod-resources.yml
 
 for var in ${VARS}; do
-	sed -i "s#\\\$$var\\\$#${!var}#g" /tmp/prod.yml
+	case "$var" in
+		"PROMETHEUS"|"OAUTH_PROXY"|*"TAG")
+			REPLACEMENT="${!var}";;
+		*)
+			REPLACEMENT="${REGISTRY}/${REGISTRY_NAMESPACE}/${!var}";;
+	esac
+	sed -i "s#\\\$$var\\\$#${REPLACEMENT}#g" /tmp/prod-resources.yml
 done
 
-cat /tmp/prod.yml
+cat /tmp/prod-resources.yml

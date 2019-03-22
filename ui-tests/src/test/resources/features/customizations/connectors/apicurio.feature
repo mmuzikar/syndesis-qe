@@ -42,8 +42,16 @@ Feature: Customization - API Connector - ApicurIO GUI
     And check visibility of page "Review Actions"
     And check that apicurio imported operations number is loaded
     Then check that apicurio shows 219 imported operations
-     # the operation we added has not configured response so checking that the error is shown
-    And check that apicurio shows 1 error
+
+  @gh-4910
+  @apicurio-check-operations-change-add-with-error
+  Scenario: Check if operations change is propagated into connector review page from ApicurIO GUI
+    When add an operation with error via apicurio gui
+    And click on button "Save" while in apicurio studio page
+    And check visibility of page "Review Actions"
+    And check that apicurio imported operations number is loaded
+    Then check that apicurio shows 219 imported operations
+    And check that apicurio shows 1 errors
 
   @apicurio-check-operations-change-remove
   Scenario: Check if removing an operations is reflected in connector review page from ApicurIO GUI
@@ -53,7 +61,6 @@ Feature: Customization - API Connector - ApicurIO GUI
     And check that apicurio imported operations number is loaded
     Then check that apicurio shows 217 imported operations
 
-
   @apicurio-check-operations-change-but-no-save
   Scenario: Check if operations change is correctly not propagated into connector when changes from ApicurIO GUI are not saved
     When add an operation via apicurio gui
@@ -62,7 +69,6 @@ Feature: Customization - API Connector - ApicurIO GUI
     Then check visibility of page "Review Actions"
     And check that apicurio imported operations number is loaded
     And check that apicurio shows 218 imported operations
-
 
   @apicurio-check-security-settings-no-security
   Scenario: Check apicurio security settings - no security
@@ -137,4 +143,3 @@ Feature: Customization - API Connector - ApicurIO GUI
     And click on the "Create Connection" button
     And select "Kie Server API" connection type
     Then check that connection authentication type has 1 option and contains text "OAuth 2.0"
-

@@ -30,7 +30,8 @@ NEXT_BRANCH="$(echo "$CURRENT_VERSION" + 0.1 | bc).x"
 
 git rev-parse --verify "${NEXT_BRANCH}" > /dev/null 2>&1 || (echo "Branch ${NEXT_BRANCH} not found!" && exit 1)
 
-source "${BASE_DIR}"/vars
+# If the properties aren't defined, source vars file
+[[ ! "z${OPERATOR}" == "z" ]] || source "${BASE_DIR}"/vars
 
 [[ "${CURRENT_VERSION}" != "$(echo "${INSTALL_TAG}" | cut -c1-3)" ]] && echo "Current branch ${CURRENT_BRANCH} does not match install tag ${INSTALL_TAG}" && exit 1
 
@@ -41,7 +42,7 @@ bash ./install_ocp.sh
 echo "Waiting for syndesis deployment..."
 
 for pod in "operator" "db" "meta" "server" "ui"; do
-    until oc get pods -n syndesis | grep "${pod}" | grep -v deploy | grep -q "1/1"; do echo "syndesis-${pod} not ready yet"; sleep 10; done
+	until oc get pods -n syndesis | grep "${pod}" | grep -v deploy | grep -q "1/1"; do echo "syndesis-${pod} not ready yet"; sleep 10; done
 done
 
 cd "${BASE_DIR}"/../../../../../.. && ./mvnw clean install -P rest -Dcucumber.options="--tags @prod-upgrade-before"

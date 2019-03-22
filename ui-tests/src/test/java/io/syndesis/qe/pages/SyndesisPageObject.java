@@ -51,8 +51,14 @@ public abstract class SyndesisPageObject {
             fail(buttonTitle + " not found", e1);
         }
 
-        return differentRoot.shouldBe(visible).findAll(By.tagName("button"))
-                .filter(Condition.matchText("(\\s*)" + buttonTitle + "(\\s*)")).shouldHave(sizeGreaterThanOrEqual(1)).first();
+        ElementsCollection foundButtons = differentRoot.shouldBe(visible).findAll(By.tagName("button"))
+                .filter(Condition.matchText("(\\s*)" + buttonTitle + "(\\s*)")).shouldHave(sizeGreaterThanOrEqual(1));
+
+        if (foundButtons.size() > 1) {
+            fail("Ambiguous button title. Found more that 1 button with title " + buttonTitle);
+        }
+
+        return foundButtons.first();
     }
 
     public SelenideElement getFirstVisibleButton(String buttonTitle) {

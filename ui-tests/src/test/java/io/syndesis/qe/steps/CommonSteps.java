@@ -373,6 +373,7 @@ public class CommonSteps {
             }
         }
         log.info(syndesisRootPage.getButton(buttonTitle).toString());
+        TestUtils.sleepForJenkinsDelayIfHigher(2);
         syndesisRootPage.getButton(buttonTitle).shouldBe(visible, enabled).shouldNotHave(attribute("disabled")).click();
         TestUtils.sleepForJenkinsDelayIfHigher(2);
     }

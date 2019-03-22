@@ -113,11 +113,12 @@ public class DbValidationSteps {
         for (List<String> list : dataTable) {
             switch (tableName.toUpperCase()) {
                 case "TODO":
-//                INSERT INTO TODOx(task) VALUES('Joe');
                     sql = "INSERT INTO TODO(task) VALUES('%s'";
                     break;
+                case "TODO WITH ID":
+                    sql = "INSERT INTO TODO(id, task) VALUES('%s'";
+                    break;
                 case "CONTACT":
-//                INSERT INTO CONTACT(first_name, last_name, company, lead_source) VALUES('Josef','Stieranka','Istrochem','db');
                     sql = "INSERT INTO CONTACT(first_name, last_name, company, lead_source) VALUES('%s'";
                     break;
             }
@@ -192,7 +193,7 @@ public class DbValidationSteps {
     }
 
     @And("^.*checks? that query \"([^\"]*)\" has (\\d+) rows? output$")
-    public void checkValuesExistInTable(String query, Integer count ) {
+    public void checkValuesExistInTable(String query, Integer count) {
         assertThat(dbUtils.getCountOfInvokedQuery(query)).isEqualTo(count);
     }
 
@@ -307,7 +308,7 @@ public class DbValidationSteps {
 
     @Then("^check rows number of table \"([^\"]*)\" is greater than (\\d+) after (\\d+) s$")
     public void checkRowsNumberIsGreaterThan(String table, int threshold, int s) throws InterruptedException, SQLException {
-        Thread.sleep(s*1000 + 1000L);
+        Thread.sleep(s * 1000 + 1000L);
         String sql = "SELECT COUNT(*) FROM CONTACT";
         log.info("SQL **{}**", sql);
         ResultSet rs = this.dbUtils.executeSQLGetResultSet(sql);

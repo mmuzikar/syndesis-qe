@@ -63,7 +63,9 @@ Feature: Simple soak test
     Then check that position of connection to fill is "Finish"
 
     When select the "Log" connection
-    And select "Simple Logger" integration action
+    And fill in values
+      | Message Context | true |
+      | Message Body    | true |
     And click on the "Done" button
 
     # final steps

@@ -10,7 +10,7 @@ Feature: Integration - S3
       And create sample buckets on S3 with name "syndesis-server-bucket-out"
       And check that buckets do exist: "syndesis-server-bucket-in, syndesis-server-bucket-out"
 
-  @integrations-s3-s3-create
+  @integration-s3-s3-create
   Scenario: S3 to S3 - Create
     Given create S3 connection using "syndesis-server-bucket-out" bucket
       And create S3 connection using "syndesis-server-bucket-in" bucket
@@ -21,7 +21,7 @@ Feature: Integration - S3
       And create a new text file in bucket "syndesis-server-bucket-out" with name "test.txt" and text "Hello world!"
     Then validate bucket with name "syndesis-server-bucket-in" contains file with name "test.txt" and text "Hello world!"
 
-  @integrations-s3-s3-delete-all
+  @integration-s3-s3-delete-all
   Scenario: S3 to S3 - Delete All
     Given create S3 connection using "syndesis-server-bucket-out" bucket
       And create a new text file in bucket "syndesis-server-bucket-out" with name "testdelete1.txt" and text "Hello world!"
@@ -35,7 +35,7 @@ Feature: Integration - S3
     Then validate bucket with name "syndesis-server-bucket-out" does not contain file with name "testdelete1.txt"
       And validate bucket with name "syndesis-server-bucket-out" does not contain file with name "testdelete2.txt"
 
-  @integrations-s3-s3-delete-all-prefixed
+  @integration-s3-s3-delete-all-prefixed
   Scenario: S3 to S3 - Delete All Prefixed
     Given create S3 connection using "syndesis-server-bucket-out" bucket
       And create a new text file in bucket "syndesis-server-bucket-out" with name "testdelete1.txt" and text "Hello world!"
@@ -49,7 +49,7 @@ Feature: Integration - S3
     Then validate bucket with name "syndesis-server-bucket-out" does not contain file with name "testdelete1.txt"
       And validate bucket with name "syndesis-server-bucket-out" contains file with name "testdelete2.txt" and text "Hello world!"
 
-  @integrations-s3-s3-delete-filtered
+  @integration-s3-s3-delete-filtered
   Scenario: S3 to S3 - Delete Filtered
     Given create S3 connection using "syndesis-server-bucket-out" bucket
       And create a new text file in bucket "syndesis-server-bucket-out" with name "testdelete1.txt" and text "Hello world!"

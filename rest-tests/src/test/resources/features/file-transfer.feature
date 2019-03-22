@@ -7,7 +7,7 @@ Feature: Integration - File transfer
   Background: Prepare
     Given clean application state
 
-  @integrations-ftp-dropbox
+  @integration-ftp-dropbox
   @ftp
   @dropbox
   Scenario: FTP to Dropbox
@@ -25,7 +25,7 @@ Feature: Integration - File transfer
     Then check that file with path "/test.txt" exists on Dropbox
       And delete file with path "/test.txt" from Dropbox
 
-  @integrations-s3-ftp
+  @integration-s3-ftp
   @ftp
   @s3
   Scenario: S3 to FTP
@@ -43,7 +43,7 @@ Feature: Integration - File transfer
     When create a new text file in bucket "syndesis-server-bucket-from" with name "test_aws.txt" and text "Hello from AWS!"
     Then validate that file "test_aws.txt" has been transfered to "/upload" FTP directory
 
-  @integrations-dropbox-s3
+  @integration-dropbox-s3
   @dropbox
   @s3
   Scenario: Dropbox to S3

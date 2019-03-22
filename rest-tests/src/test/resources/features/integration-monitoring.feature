@@ -1,7 +1,7 @@
 # @sustainer: avano@redhat.com
 
 @rest
-@integrations-db-to-db-monitoring
+@integration-db-to-db-monitoring
 @database
 @datamapper
 Feature: Integration - Monitoring

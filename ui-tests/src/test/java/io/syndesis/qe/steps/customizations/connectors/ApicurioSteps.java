@@ -1,16 +1,7 @@
 package io.syndesis.qe.steps.customizations.connectors;
 
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.SelenideElement;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import io.syndesis.qe.utils.TestUtils;
-import io.syndesis.qe.wait.OpenShiftWaitUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
-
-import java.util.concurrent.TimeoutException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
 import static com.codeborne.selenide.Condition.attribute;
@@ -19,9 +10,21 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static com.codeborne.selenide.Selenide.executeJavaScript;
 
+import org.openqa.selenium.By;
+
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
+
+import java.util.concurrent.TimeoutException;
+
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import io.syndesis.qe.utils.TestUtils;
+import io.syndesis.qe.wait.OpenShiftWaitUtils;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ApicurioSteps {
@@ -40,8 +43,11 @@ public class ApicurioSteps {
         public static By ADD_OPERATION = By.cssSelector("button.icon-button");
         public static By OPERATION_KEBAB = By.id("dropdownKebab");
         public static By OPERATION = By.className("api-path");
-        public static By OPERATION_KEBAB_MENU = By.className("dropdown-menu");
+        public static By OPERATION_KEBAB_MENU = By.className("detail-actions");
         public static By OPERATION_KEBAB_MENU_DELETE = By.xpath("//span[contains(text(), \"Delete Path\")]");
+
+        public static By RESPONSE_SECTION = By.className("responses-section");
+        public static By MARKDOWN_EDITOR = By.className("inline-markdown-editor-label");
 
         //security elements
         public static By SECURITY_SECTION = By.className("security-section");
@@ -82,7 +88,6 @@ public class ApicurioSteps {
         //security requirements page
         public static By SECURITY_REQUIREMENT = By.xpath("//*[contains(.,'ImmovableName')]");
         public static By SECURITY_REQUIREMENT_ITEMS = By.className("list-group-item-heading");
-
     }
 
     @Then("^check that apicurio shows (\\d+) imported operations$")
@@ -158,6 +163,21 @@ public class ApicurioSteps {
 
     @When("^add an operation via apicurio gui$")
     public void addOperation() {
+        doAddOperation(false);
+    }
+
+    @When("^add an operation with error via apicurio gui$")
+    public void addOperationWithError() {
+        doAddOperation(true);
+    }
+
+    /**
+     * Add an operation for apicurito path.
+     * If we want to see an error in review, we do not fill operation description
+     *
+     * @param withError - true to invoke an error in syndesis apicurito review due to empty description field
+     */
+    public void doAddOperation(boolean withError) {
         $(Elements.OPERATIONS_CONTAINER).shouldBe(visible).$(Elements.ADD_OPERATION).shouldBe(visible).click();
         SelenideElement pathInput = $(Elements.MODAL_DIALOG).shouldBe(visible).$(Elements.MODAL_PATH_INPUT).shouldBe(visible);
 
@@ -172,17 +192,38 @@ public class ApicurioSteps {
 
         $(Elements.MODAL_FOOTER).shouldBe(visible).$(Elements.MODAL_SUBMIT_ADD).shouldBe(visible).click();
         clickOnButtonInApicurio("Add Operation");
+
+        $(Elements.RESPONSE_SECTION).shouldBe(visible).scrollIntoView(true)
+                .$$(By.tagName("button")).filter(Condition.attribute("title", "Add a response to the operation."))
+                .shouldHaveSize(1).first().click();
+
+        $(Elements.MODAL_SUBMIT_ADD).shouldBe(visible).click();
+
+        if (!withError) {
+            $(Elements.RESPONSE_SECTION).shouldBe(visible).scrollIntoView(true)
+                    .$(Elements.MARKDOWN_EDITOR).shouldBe(visible)
+                    .click();
+
+            executeJavaScript(
+                    "document.getElementsByTagName(\"ace-editor\").item(0).setAttribute(\"id\", \"editor\");" +
+                            "ace.edit(\"editor\").setValue('description here');"
+            );
+
+            $(Elements.RESPONSE_SECTION).shouldBe(visible).scrollIntoView(true)
+                    .$$(By.tagName("button")).filter(Condition.attribute("title", "Save changes."))
+                    .shouldHaveSize(1).first().click();
+        }
     }
 
     @When("^remove an operation via apicurio gui$")
     public void removeOperation() {
         $(Elements.PATH_SECTION).shouldBe(visible).$(Elements.OPERATION).shouldBe(visible).click();
         $(Elements.OPERATION_KEBAB).shouldBe(visible).click();
-        SelenideElement kebabMenu = $$(Elements.OPERATION_KEBAB_MENU).shouldHaveSize(5).get(1);
+        SelenideElement kebabMenu = $(Elements.OPERATION_KEBAB_MENU);
         try {
             kebabMenu.$(Elements.OPERATION_KEBAB_MENU_DELETE).shouldBe(visible).click();
         } catch (org.openqa.selenium.StaleElementReferenceException e) {
-            $$(Elements.OPERATION_KEBAB_MENU).shouldHaveSize(5).get(1)
+            $(Elements.OPERATION_KEBAB_MENU)
                     .$(Elements.OPERATION_KEBAB_MENU_DELETE).shouldBe(visible)
                     .click();
         }
@@ -239,7 +280,6 @@ public class ApicurioSteps {
         saveButtons = $(SecurityPageElements.ACTION_HEADER).shouldBe(visible).$$(SecurityPageElements.SAVE);
         assertThat(saveButtons.size()).isGreaterThan(1);
         saveButtons.get(2).shouldBe(visible).click();
-
     }
 
     @Then("^check that api connector authentication section contains text \"([^\"]*)\"$")

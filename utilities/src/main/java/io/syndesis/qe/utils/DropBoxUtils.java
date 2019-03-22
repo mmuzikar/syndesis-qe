@@ -1,14 +1,12 @@
 package io.syndesis.qe.utils;
 
+import org.springframework.stereotype.Component;
+
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.GetMetadataErrorException;
 import com.dropbox.core.v2.files.WriteMode;
-import io.syndesis.qe.accounts.Account;
-import io.syndesis.qe.accounts.AccountsDirectory;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,6 +16,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
+import io.syndesis.qe.accounts.Account;
+import io.syndesis.qe.accounts.AccountsDirectory;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @Component
 public class DropBoxUtils {
@@ -25,6 +27,7 @@ public class DropBoxUtils {
 
     private DbxClientV2 getClient() throws DbxException {
         if (this.client == null) {
+            System.setProperty("https.protocols", "TLSv1.2");
             Optional<Account> optional = AccountsDirectory.getInstance().getAccount("QE Dropbox");
 
             if (optional.isPresent()) {

@@ -9,7 +9,7 @@ Feature: Integration - IRC
       And deploy IRC server
       And create IRC connection
 
-  @integrations-amq-irc
+  @integration-amq-irc
   @activemq
   @datamapper
   Scenario: AMQ to "Send message"
@@ -27,7 +27,7 @@ Feature: Integration - IRC
       And publish message with content '{"header":"messageHeader", "messageContent":"Hi there!"}' to queue "irc-input"
     Then verify that the message with content '<?xml version="1.0" encoding="UTF-8" standalone="no"?><response><body>Hi there!</body></response>' was posted to channels "#spam1,#spam2"
 
-  @integrations-irc-ftp
+  @integration-irc-ftp
   @ftp
   Scenario: "Private message" to FTP
     Given deploy FTP server

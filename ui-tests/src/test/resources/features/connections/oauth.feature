@@ -17,7 +17,8 @@ Feature: Connections - OAuth
     Then check that settings item "Salesforce" has button "Register"
     When fill all oauth settings
     Then create connections using oauth
-      | SAP Concur      | Test-Concur-connection          |
+#    Until the issue with @concur support is resolved, concur testing will be disabled.
+#      | SAP Concur      | Test-Concur-connection          |
       | Gmail           | Test-Gmail-connection           |
       | Salesforce      | Test-Salesforce-connection      |
       | Google Sheets   | Test-Google-Sheets-connection   |

@@ -11,6 +11,7 @@ Feature: SQL Connector
     And log into the Syndesis
     And reset content of "todo" table
     And navigate to the "Home" page
+
   #
   # 1. Check that SQL connector pulls all rows on exchange when SQL connector is as middle step
   # (having SQL connector as 'from' or 'to' doesn't cause issue from GH-3856)
@@ -20,12 +21,12 @@ Feature: SQL Connector
   @sql-connector-all-rows
   Scenario: Check SQL pulls all rows
 
-    Then inserts into "todo" table
+    When inserts into "todo" table
       | ABCsampleTODO |
       | XYZsampleTODO |
       | KLMsampleTODO |
 
-    When click on the "Create Integration" button to create a new integration
+    And click on the "Create Integration" button to create a new integration
     Then check visibility of visual integration editor
     And check that position of connection to fill is "Start"
 
@@ -40,13 +41,9 @@ Feature: SQL Connector
 
     # select Log as 'to' point
     When select the "Log" connection
-    And select "Simple Logger" integration action
     And fill in values
-      | log level      | INFO  |
-      | Log Body       | true  |
-      | Log message Id | false |
-      | Log Headers    | false |
-      | Log everything | false |
+      | Message Context | true |
+      | Message Body    | true |
     Then click on the "Done" button
 
     # select postgresDB as middle point
@@ -68,6 +65,6 @@ Feature: SQL Connector
 
     # validate that all items from db are present
     When sleep for "10000" ms
-    Then .*validate that logs of integration "DB_2_Log" contains string "ABCsampleTODO"
-    And .*validate that logs of integration "DB_2_Log" contains string "XYZsampleTODO"
-    And .*validate that logs of integration "DB_2_Log" contains string "KLMsampleTODO"
+    Then validate that logs of integration "DB_2_Log" contains string "ABCsampleTODO"
+    And validate that logs of integration "DB_2_Log" contains string "XYZsampleTODO"
+    And validate that logs of integration "DB_2_Log" contains string "KLMsampleTODO"

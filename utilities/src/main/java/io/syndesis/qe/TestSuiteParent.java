@@ -7,6 +7,9 @@ import java.util.concurrent.TimeUnit;
 
 import io.fabric8.kubernetes.api.model.Secret;
 import io.syndesis.qe.bdd.CommonSteps;
+import io.syndesis.qe.templates.AmqTemplate;
+import io.syndesis.qe.templates.KuduRestAPITemplate;
+import io.syndesis.qe.templates.KuduTemplate;
 import io.syndesis.qe.utils.OpenShiftUtils;
 import io.syndesis.qe.utils.TestUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +53,17 @@ public abstract class TestSuiteParent {
 
     @AfterClass
     public static void tearDown() {
+
+        if (TestUtils.isDcDeployed("syndesis-kudu")) {
+            log.info("Cleaning Kudu instances");
+            KuduRestAPITemplate.cleanUp();
+            KuduTemplate.cleanUp();
+        }
+
+        if (TestUtils.isDcDeployed("broker-amq")) {
+            AmqTemplate.cleanUp();
+        }
+
         if (lockSecret != null) {
             if (TestConfiguration.namespaceCleanupAfter()) {
                 log.info("Cleaning namespace");
@@ -58,7 +72,6 @@ public abstract class TestSuiteParent {
                 log.info("Releasing namespace lock");
                 OpenShiftUtils.getInstance().deleteSecret(lockSecret);
             }
-
         }
     }
 

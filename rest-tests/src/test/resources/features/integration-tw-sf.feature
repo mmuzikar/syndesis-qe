@@ -6,7 +6,7 @@
 @datamapper
 Feature: Integration - Twitter
 
-  @integrations-tw-sf
+  @integration-tw-sf
   Scenario: Mention to Salesforce create object
     Given clean application state
     Given clean SF contacts related to TW account: "twitter_talky"
