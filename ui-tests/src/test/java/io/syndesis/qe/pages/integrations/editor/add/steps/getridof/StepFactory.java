@@ -3,6 +3,7 @@ package io.syndesis.qe.pages.integrations.editor.add.steps.getridof;
 import io.syndesis.qe.pages.integrations.editor.add.steps.AdvancedFilter;
 import io.syndesis.qe.pages.integrations.editor.add.steps.BasicFilter;
 import io.syndesis.qe.pages.integrations.editor.add.steps.Log;
+import io.syndesis.qe.pages.integrations.editor.add.steps.Template;
 
 public class StepFactory {
 
@@ -16,6 +17,8 @@ public class StepFactory {
             return new BasicFilter(parameter);
         } else if (stepType.toUpperCase().equals(AbstractStep.StepType.ADVANCED_FILTER)) {
             return new AdvancedFilter(parameter);
+        } else if (stepType.toUpperCase().equals(AbstractStep.StepType.TEMPLATE)) {
+            return new Template(parameter);
         }
 
         return null;

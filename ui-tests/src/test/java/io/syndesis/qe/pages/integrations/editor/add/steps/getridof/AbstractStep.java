@@ -1,13 +1,11 @@
 package io.syndesis.qe.pages.integrations.editor.add.steps.getridof;
 
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-
+import com.codeborne.selenide.SelenideElement;
+import io.syndesis.qe.pages.SyndesisPageObject;
 import org.openqa.selenium.By;
 
-import com.codeborne.selenide.SelenideElement;
-
-import io.syndesis.qe.pages.SyndesisPageObject;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.$;
 
 public abstract class AbstractStep extends SyndesisPageObject {
 
@@ -19,6 +17,7 @@ public abstract class AbstractStep extends SyndesisPageObject {
         public static final String LOG = "LOG";
         public static final String BASIC_FILTER = "BASIC FILTER";
         public static final String ADVANCED_FILTER = "ADVANCED FILTER";
+        public static final String TEMPLATE = "TEMPLATE";
     }
 
     @Override
