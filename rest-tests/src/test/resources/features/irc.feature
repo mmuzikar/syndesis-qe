@@ -12,7 +12,7 @@ Feature: Integration - IRC
   @integration-amq-irc
   @activemq
   @datamapper
-  Scenario: AMQ to "Send message"
+  Scenario: AMQ to Send message
     Given deploy ActiveMQ broker
       And create ActiveMQ connection
       And create ActiveMQ "subscribe" action step with destination type "queue" and destination name "irc-input"
@@ -29,7 +29,7 @@ Feature: Integration - IRC
 
   @integration-irc-ftp
   @ftp
-  Scenario: "Private message" to FTP
+  Scenario: Private message to FTP
     Given deploy FTP server
       And create FTP connection
       And create IRC subscribe step with nickname "listener" and channels "#listen"

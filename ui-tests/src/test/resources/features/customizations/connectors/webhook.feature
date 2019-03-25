@@ -17,8 +17,7 @@ Feature: Webhook extension
 #
   @webhook-get
   Scenario: Check message
-    When navigate to the "Integrations" page
-    And click on the "Create Integration" button to create a new integration.
+    When click on the "Create Integration" button to create a new integration.
     And check visibility of visual integration editor
     Then check that position of connection to fill is "Start"
 
@@ -51,7 +50,8 @@ Feature: Webhook extension
     And publish integration
     Then wait until integration "webhook-test" gets into "Running" state
 
-    And select the "webhook-test" integration
+    When select the "webhook-test" integration
+    And sleep for jenkins delay or "10" seconds
     And invoke post request to webhook with body {"author":"New Author","title":"Book Title"}
     # give integration time to invoke DB request
     And sleep for jenkins delay or "3" seconds

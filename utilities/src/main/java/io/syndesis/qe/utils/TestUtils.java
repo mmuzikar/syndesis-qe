@@ -1,7 +1,5 @@
 package io.syndesis.qe.utils;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -260,10 +258,10 @@ public final class TestUtils {
      */
     public static void printPods() {
         // Use oc client directly, as it has nice output
-        OpenShiftBinaryClient.getInstance().executeCommandAndConsumeOutput(
+        final String output = OpenShiftBinaryClient.getInstance().executeCommandWithReturn(
                 "Unable to list pods",
-                istream -> log.info(IOUtils.toString(istream, "UTF-8")),
                 "get", "pods", "-n", TestConfiguration.openShiftNamespace()
         );
+        log.info(output);
     }
 }

@@ -1,5 +1,7 @@
 package io.syndesis.qe;
 
+import static org.junit.Assume.assumeFalse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.stream.Collectors;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.syndesis.qe.bdd.storage.StepsStorage;
 import io.syndesis.qe.utils.OpenShiftUtils;
@@ -25,6 +28,12 @@ public class RestTestHooks {
     @Autowired
     private StepsStorage stepStorage;
 
+    @Before("@syndesis-upgrade")
+    public void skipProdUpgrade() {
+        // Prod upgrade is tested differently, so skip these tests with prod version
+        assumeFalse(System.getProperty("syndesis.version").contains("redhat"));
+    }
+
     @After
     public void afterTest() {
         stepStorage.flushStepDefinitions();
@@ -32,7 +41,7 @@ public class RestTestHooks {
         SampleDbConnectionManager.closeConnections();
     }
 
-    @After("@upgrade,@rollback,@upgrade-operator")
+    @After("@syndesis-upgrade")
     public void clearUpgrade() {
         // Restore syndesis version if it was changed by previous upgrade test
         if (System.getProperty("syndesis.upgrade.backup.version") != null) {

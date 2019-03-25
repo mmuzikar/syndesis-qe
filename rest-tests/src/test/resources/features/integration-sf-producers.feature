@@ -17,7 +17,7 @@ Feature: Integration - Salesforce
       And create ActiveMQ "subscribe" action step with destination type "queue" and destination name "sf-producers-input"
 
   @integration-sf-producers-delete-record
-  Scenario: AMQ to "Delete record"
+  Scenario: AMQ to Delete record
     When create SF "delete-sobject" action step on field: "Lead"
       And create integration with name: "AMQ-SF delete record"
     Then wait for integration with name: "AMQ-SF delete record" to become active
@@ -25,7 +25,7 @@ Feature: Integration - Salesforce
     Then verify that lead was deleted
 
   @integration-sf-producers-delete-record-external-id
-  Scenario: AMQ to "Delete record with external id"
+  Scenario: AMQ to Delete record with external id
     When create SF "delete-sobject-with-id" action step with properties
       | sObjectName   | Lead  |
       | sObjectIdName | Email |
@@ -35,7 +35,7 @@ Feature: Integration - Salesforce
     Then verify that lead was deleted
 
   @integration-sf-producers-fetch-record
-  Scenario: AMQ to "Fetch record" to AMQ
+  Scenario: AMQ to Fetch record to AMQ
     When create SF "get-sobject" action step on field: "Lead"
       And create ActiveMQ "publish" action step with destination type "queue" and destination name "sf-producers-output"
       And create integration with name: "AMQ-SF-AMQ fetch record"
@@ -44,7 +44,7 @@ Feature: Integration - Salesforce
     Then verify that lead json object was received from queue "sf-producers-output"
 
   @integration-sf-producers-fetch-record-external-id
-  Scenario: AMQ to "Fetch record with external id" to AMQ
+  Scenario: AMQ to Fetch record with external id to AMQ
     When create SF "get-sobject-with-id" action step with properties
       | sObjectName   | Lead  |
       | sObjectIdName | Email |
@@ -56,7 +56,7 @@ Feature: Integration - Salesforce
 
   @integration-sf-producers-create-record
   @datamapper
-  Scenario: AMQ to "Create a new record" to AMQ
+  Scenario: AMQ to Create a new record to AMQ
     When create SF "create-sobject" action step on field: "Lead"
       And start mapper definition with name: "integration-sf-producers-create-record"
       And MAP using Step 2 and field "/id" to "/id"
@@ -69,7 +69,7 @@ Feature: Integration - Salesforce
       And verify that lead creation response with email "joedoeprod@acme.com" was received from queue "sf-producers-output"
 
   @integration-sf-producers-update-record
-  Scenario: AMQ to "Update record"
+  Scenario: AMQ to Update record
     When create SF "update-sobject" action step on field: "Lead"
       And create integration with name: "AMQ-SF update record"
     Then wait for integration with name: "AMQ-SF update record" to become active
@@ -78,7 +78,7 @@ Feature: Integration - Salesforce
 
   @integration-sf-producers-upsert-record-insert
   @datamapper
-  Scenario: AMQ to "Upsert record (insert)" to AMQ
+  Scenario: AMQ to Upsert record insert to AMQ
     When create SF "upsert-sobject" action step with properties
       | sObjectName   | Lead  |
       | sObjectIdName | Email |
@@ -94,7 +94,7 @@ Feature: Integration - Salesforce
       And verify that lead creation response with email "joedoeprod@acme.com" was received from queue "sf-producers-output"
 
   @integration-sf-producers-upsert-record-update
-  Scenario: AMQ to "Upsert record (update)" to AMQ
+  Scenario: AMQ to Upsert record update to AMQ
     When create SF "upsert-sobject" action step with properties
       | sObjectName    | Lead  |
       | sObjectIdName  | Email |

@@ -1,5 +1,6 @@
 # @sustainer: avano@redhat.com
 
+@syndesis-upgrade
 @syndesis-upgrade-operator
 @gh-4781
 Feature: Syndesis Upgrade Using Operator

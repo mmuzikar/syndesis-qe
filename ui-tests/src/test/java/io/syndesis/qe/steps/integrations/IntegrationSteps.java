@@ -174,7 +174,7 @@ public class IntegrationSteps {
         }
     }
 
-    @Then("^.*validate that logs of integration \"([^\"]*)\" contains string \"([^\"]*)\"$")
+    @Then("^.*validate that logs of integration \"([^\"]*)\" contains string \"(.*)\"$")
     public void checkThatLogsContain(final String integrationName, final String text) {
         try {
             OpenShiftWaitUtils.waitFor(() -> OpenShiftUtils.getIntegrationLogs(integrationName).contains(text), 60 * 1000L);
@@ -183,7 +183,7 @@ public class IntegrationSteps {
         }
     }
 
-    @Then("^.*validate that logs of integration \"([^\"]*)\" doesn't contains string \"([^\"]*)\"$")
+    @Then("^.*validate that logs of integration \"([^\"]*)\" doesn't contain string \"(.*)\"$")
     public void checkThatLogsDoesNotContain(final String integrationName, final String text) {
         try {
             OpenShiftWaitUtils.waitFor(() -> OpenShiftUtils.getIntegrationLogs(integrationName).contains(text), 60 * 1000L);

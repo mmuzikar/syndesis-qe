@@ -12,7 +12,7 @@ Feature: Integration - Salesforce
     And create SalesForce connection
 
   @integration-sf-db @integration-sf-db-create
-  Scenario: "On create" to DB
+  Scenario: On create to DB
     And create SF "salesforce-on-create" action step on field: "Lead"
     And start mapper definition with name: "mapping 1"
     Then MAP using Step 1 and field "/Company" to "/company"
@@ -26,7 +26,7 @@ Feature: Integration - Salesforce
     Then validate DB created new lead with first name: "John", last name: "Doe", email: "jdoesfdb@acme.com"
 
   @integration-sf-db @integration-sf-db-delete
-  Scenario: "On delete" to DB
+  Scenario: On delete to DB
     Then create SF lead with first name: "John", last name: "Doe", email: "jdoesfdb@acme.com" and company: "ACME"
     And create SF "salesforce-on-delete" action step on field: "Lead"
     And start mapper definition with name: "mapping 1"
@@ -38,7 +38,7 @@ Feature: Integration - Salesforce
     Then validate SF on delete to DB created new task with lead ID as task name
 
   @integration-sf-db @integration-sf-db-update
-  Scenario: "On update" to DB
+  Scenario: On update to DB
     Then create SF lead with first name: "John", last name: "Doe", email: "jdoesfdb@acme.com" and company: "ACME"
     And create SF "salesforce-on-update" action step on field: "Lead"
     And start mapper definition with name: "mapping 1"

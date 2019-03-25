@@ -96,6 +96,7 @@ public class KuduRestAPITemplate {
             try {
                 OpenShiftWaitUtils.waitFor(OpenShiftWaitUtils.areExactlyNPodsReady(LABEL_NAME, APP_NAME, 1), 15 * 60 * 1000L);
                 log.info("Checking pod logs if the app is ready");
+                OpenShiftWaitUtils.waitFor(() -> !OpenShiftUtils.arePodLogsEmpty(APP_NAME), 5 * 60 * 1000L);
                 OpenShiftWaitUtils.waitFor(() -> OpenShiftUtils.getPodLogs(APP_NAME).contains("Started App in"), 5 * 60 * 1000L);
             } catch (InterruptedException | TimeoutException e) {
                 fail("Wait for " + APP_NAME + " deployment failed ", e);

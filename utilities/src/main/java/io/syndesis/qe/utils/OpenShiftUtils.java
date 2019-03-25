@@ -3,8 +3,6 @@ package io.syndesis.qe.utils;
 import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import org.apache.commons.io.IOUtils;
-
 import java.util.Optional;
 
 import cz.xtf.openshift.OpenShiftBinaryClient;
@@ -131,6 +129,14 @@ public final class OpenShiftUtils {
         return null;
     }
 
+    public static boolean arePodLogsEmpty(String podPartialName) {
+        // pod has to be in running state because pod in ContainerCreating state causes exception
+        OpenShiftWaitUtils.waitUntilPodIsRunning(podPartialName);
+
+        Optional<Pod> integrationPod = getPodByPartialName(podPartialName);
+        return integrationPod.map(pod -> OpenShiftUtils.getInstance().getPodLog(pod).isEmpty()).orElse(true);
+    }
+
     /**
      * Invoke openshift's API. Only part behind master url is necessary and the path must start with slash.
      * @param method HTTP method to use
@@ -192,13 +198,13 @@ public final class OpenShiftUtils {
      * @param resource path to resource file to use with -f
      */
     public static void create(String resource) {
-        OpenShiftBinaryClient.getInstance().executeCommandAndConsumeOutput(
+        final String output = OpenShiftBinaryClient.getInstance().executeCommandWithReturn(
                 "Unable to create resource " + resource,
-                istream -> log.info(IOUtils.toString(istream, "UTF-8")),
                 "apply",
                 "--overwrite=false",
                 "-n", TestConfiguration.openShiftNamespace(),
                 "-f", resource
         );
+        log.info(output);
     }
 }

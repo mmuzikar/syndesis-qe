@@ -16,7 +16,7 @@ Feature: Log Connector
 #  1. Check that log message exists
 #
   @log-connector-error-message
-  Scenario: Check log message
+  Scenario Outline: Check log message with body: <body> and context: <context>
 
     # create integration
     When click on the "Create Integration" button to create a new integration.
@@ -34,13 +34,9 @@ Feature: Log Connector
     Then check visibility of page "Choose a Finish Connection"
 
     When select the "Log" connection
-    And select "Simple Logger" integration action
     And fill in values
-      | log level      | ERROR |
-      | Log Body       | true  |
-      | Log message Id | true  |
-      | Log Headers    | true  |
-      | Log everything | true  |
+      | Message Context | <context> |
+      | Message Body    | <body>    |
 
     Then click on the "Done" button
 
@@ -51,7 +47,15 @@ Feature: Log Connector
     And wait until integration "Integration_with_log" gets into "Running" state
 
     When sleep for "10000" ms
-    Then validate that logs of integration "integration_with_log" contains string "Red Hat"
+    Then validate that logs of integration "integration_with_log" contains string "<log_contains>"
+    And validate that logs of integration "integration_with_log" doesn't contain string "<log_not_contains>"
+
+    Examples:
+      | context | body  | log_contains                    | log_not_contains              |
+      | true    | true  | Body: [[{"last_name":"Jackson", | "status":"done","failed":true |
+      | false   | true  | Body: [[{"last_name":"Jackson", | Message Context:              |
+      | true    | false | Message Context:                | Body: []                      |
+      | false   | false | "status":"done","failed":false  | Message Context:              |
 
 #
 #  2. Check that log step works without any message or checkboxes
@@ -75,14 +79,11 @@ Feature: Log Connector
     And click on the "Next" button
     Then check visibility of page "Choose a Finish Connection"
 
-    Then select the "Log" connection
-    And select "Simple Logger" integration action
+    And select "Log" integration step
     And fill in values
-      | log level      | ERROR |
-      | Log Body       | true  |
-      | Log message Id | true  |
-      | Log Headers    | true  |
-      | Log everything | true  |
+      | Message Context | false |
+      | Message Body    | false |
+      | Custom Text     |       |
 
     Then click on the "Done" button
 
@@ -98,9 +99,8 @@ Feature: Log Connector
     When click on the "Save" button
     And set integration name "Integration_with_log2"
     And publish integration
+
     Then Integration "Integration_with_log2" is present in integrations list
-
     And wait until integration "Integration_with_log2" starting status gets into "Deploying ( 3 / 4 )" state
-    And validate that logs of integration "Integration_with_log2" doesn't contains string "IllegalArgumentException"
-
+    And validate that logs of integration "Integration_with_log2" doesn't contain string "IllegalArgumentException"
     And wait until integration "Integration_with_log2" gets into "Running" state
