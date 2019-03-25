@@ -74,8 +74,5 @@ Feature: Integration - DB to DB with extension
     And click on the "Extensions" link
     Then check visibility of page "Extensions"
 
-    When select "Delete" action on "Log Message Body" technical extension
-    Then check visibility of dialog page "Confirm Delete?"
-    And check visibility of notification about integrations "CRUD4-read-create-inbuilt E2E" in which is tech extension used
-
-    Then click on the modal dialog "Cancel" button
+    Then check "Delete" button is "disabled"
+    And check that tech extension "CRUD4-read-create-inbuilt E2E" is used by 1 integrations
