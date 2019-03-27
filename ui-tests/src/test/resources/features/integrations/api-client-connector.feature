@@ -41,6 +41,9 @@ Feature: Integration - DB to API
     Then select "Create new task" integration action
 
     When add integration step on position "0"
+    And select "Split" integration step
+
+    When add integration step on position "1"
     And select "Data Mapper" integration step
     And open data mapper collection mappings
     And create data mapper mappings
@@ -77,13 +80,16 @@ Feature: Integration - DB to API
     Then fill in invoke query input with "insert into contact values ('malphite', 'Jackson', :#COMPANY, 'db', '2018-03-23');" value
     Then click on the "Done" button
 
+    And add integration step on position "0"
+    And select "Split" integration step
+
     #middle connector
-    When add integration step on position "0"
+    When add integration step on position "1"
     And select the "Todo connection" connection
     Then select "Fetch task" integration action
 
     #start - here - middle -finish
-    When add integration step on position "0"
+    When add integration step on position "1"
     And select "Data Mapper" integration step
     Then check visibility of data mapper ui
     And open data mapper collection mappings
@@ -92,10 +98,10 @@ Feature: Integration - DB to API
     And click on the "Done" button
 
     #start - mapper - middle - here -finish
-    When add integration step on position "2"
+    When add integration step on position "3"
     And select "Data Mapper" integration step
     Then check visibility of data mapper ui
-    When open data bucket "3 - Response"
+    When open data bucket "4 - Response"
     And create data mapper mappings
       | body.task | COMPANY |
     And click on the "Done" button
