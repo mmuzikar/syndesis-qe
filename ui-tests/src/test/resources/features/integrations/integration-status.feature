@@ -9,6 +9,7 @@ Feature: Integration - Status
     Given clean application state
     Given log into the Syndesis
 
+  @ENTESB-12415
   @integration-check-starting-status-on-detail-page
   Scenario: Check starting integration status on detail page
     When navigate to the "Home" page
@@ -30,6 +31,7 @@ Feature: Integration - Status
 
     Then check starting integration status on Integration Detail page
 
+  @ENTESB-12415
   @integration-check-starting-status-on-integration-list
   Scenario: Check starting integration status on integration list
     When navigate to the "Home" page
@@ -53,6 +55,7 @@ Feature: Integration - Status
 
     Then check starting integration ASD status on Integrations page
 
+  @ENTESB-12415
   @integration-check-starting-status-on-home-page
   Scenario: Check starting integration status on home page
     When navigate to the "Home" page

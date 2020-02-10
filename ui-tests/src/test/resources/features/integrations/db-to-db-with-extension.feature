@@ -15,6 +15,7 @@ Feature: Integration - DB to DB with extension
     Given import extensions from syndesis-extensions folder
       | syndesis-extension-log-body |
 
+  @ENTESB-12415
   @tech-extension-create-integration-with-new-tech-extension
   Scenario: Create
     Then inserts into "contact" table

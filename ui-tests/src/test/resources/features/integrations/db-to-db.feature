@@ -182,6 +182,7 @@ Feature: Integration - DB to DB
 #
 #  4. select - create (via buildin procedure)
 #
+  @ENTESB-12415
   @db-connection-crud-4-read-update-inbuilt
   Scenario: Read and create operations on stored procedure
       # INSERT INTO CONTACT(first_name, last_name, company, lead_source) VALUES('Josef','Stieranka','Istrochem','db');

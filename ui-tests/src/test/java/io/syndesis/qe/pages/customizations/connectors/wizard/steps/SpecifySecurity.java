@@ -85,6 +85,8 @@ public class SpecifySecurity extends SyndesisPageObject implements WizardPhase {
     }
 
     public void selectHttpBasicAuthentication() {
-        $(Input.HTTP_BASIC_AUTHENTICATION).setSelected(true);
+        if ($(Input.HTTP_BASIC_AUTHENTICATION).attr("checked") != null) {
+            $(Input.HTTP_BASIC_AUTHENTICATION).setSelected(true);
+        }
     }
 }

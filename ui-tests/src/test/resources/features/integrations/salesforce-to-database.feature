@@ -20,6 +20,7 @@ Feature: Integration - Salesforce to DB
       | Salesforce | QE Salesforce |
 
   @integrations-salesforce-to-database-scenario
+  @ENTESB-12415
   Scenario: Create
     When navigate to the "Home" page
     And click on the "Create Integration" link to create a new integration.
