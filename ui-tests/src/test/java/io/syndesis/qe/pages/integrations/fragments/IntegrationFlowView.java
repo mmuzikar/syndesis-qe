@@ -47,8 +47,7 @@ public class IntegrationFlowView extends SyndesisPageObject {
 
         public static final By DELETE_BUTTON = ByUtils.dataTestId("integration-editor-step-adder-delete-button");
 
-        //tag has to be specified otherwise it is mixed with DATA_WARNING_BUTTONs
-        public static final By STEP = ByUtils.containsDataTestId("li", "integration-editor-steps-list-item");
+        public static final By STEP = ByUtils.containsDataTestId("integration-editor-steps-list-item");
     }
 
     private static final class Button {
