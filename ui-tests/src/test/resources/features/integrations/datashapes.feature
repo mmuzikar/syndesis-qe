@@ -17,6 +17,7 @@ Feature: Integration - data shapes propagation
 
 
   @integrations-datashapes-input-change
+  @ENTESB-13527
   Scenario: Data shapes propagation
     When select the "PostgresDB" connection
     And select "Periodic SQL invocation" integration action

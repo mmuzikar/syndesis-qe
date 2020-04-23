@@ -43,7 +43,8 @@ public class EditorSteps {
         public static final By HIDDEN_DETAILED_VIEW = By.cssSelector("div[class*='flow-view-container syn-scrollable--body collapsed']");
         public static final By INTEGRATION_EDITOR_STEPS_LIST = By.className("integration-editor-steps-list");
         public static final By INTEGRATION_EDITOR_STEPS_LIST_ITEM = By.className("list-group-item");
-        public static final By ADDITIONAL_INFO = By.className("list-view-pf-additional-info");
+        public static final By STEP_DATA_SHAPE = ByUtils.dataTestId("editor-step-datashape");
+        public static final By ADDITIONAL_INFO = ByUtils.dataTestId("editor-step-info");
     }
 
     private static final class Button {
@@ -255,8 +256,8 @@ public class EditorSteps {
 
     @Then("^validate that input datashape on step (\\d+) contains \"([^\"]*)\"$")
     public void validateInputDataShape(int stepPosition, String expectedDataShape) {
-        Assertions.assertThat(flowViewComponent.getStepOnPosition(stepPosition).$(Element.ADDITIONAL_INFO).text())
-            .containsIgnoringCase("Data Type: " + expectedDataShape);
+        Assertions.assertThat(flowViewComponent.getStepOnPosition(stepPosition).$(Element.STEP_DATA_SHAPE).text())
+            .isEqualToIgnoringCase(expectedDataShape);
     }
 
     @Then("^check that alert dialog contains text \"([^\"]*)\"$")

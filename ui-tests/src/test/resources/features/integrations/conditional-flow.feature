@@ -40,7 +40,7 @@ Feature: Conditional flows - content base routing
     When add integration step on position "0"
     And select the "Conditional Flows" connection
 
-
+  @ENTESB-13541
   @integrations-conditional-flows-icon-test-move-up
   Scenario: Conditional flows icon test - move up
     And select "Advanced expression builder" integration action
@@ -61,6 +61,7 @@ Feature: Conditional flows - content base routing
       | 0 |       |
       | 1 | first |
 
+  @ENTESB-13541
   @integrations-conditional-flows-icon-test-delete
   Scenario: Conditional flows icon test - delete
     And select "Advanced expression builder" integration action
@@ -80,6 +81,7 @@ Feature: Conditional flows - content base routing
     Then validate condition content in condition flow step
       | 0 |  |
 
+  @ENTESB-13541
   @integrations-conditional-flows-icon-test-multiple-moves
   Scenario: Conditional flows icon test multiple moves
     And select "Advanced expression builder" integration action
@@ -137,15 +139,16 @@ Feature: Conditional flows - content base routing
     And click on the "Next" button
     And click on the "Next" button
 
-    When configure condition on position 2
+    When configure condition on position 1
     And add integration step on position "0"
     And select the "PostgresDB" connection
     And select "Invoke SQL" integration action
     And fill in invoke query input with "insert into contact(first_name) values ('Shaco was here')" value
     And click on the "Next" button
+    Then check visibility of visual integration editor
     Then return to primary flow from integration flow from dropdown
 
-    When configure condition on position 3
+    When configure condition on position 2
     And add integration step on position "0"
     And select the "PostgresDB" connection
     And select "Invoke SQL" integration action
@@ -153,7 +156,7 @@ Feature: Conditional flows - content base routing
     And click on the "Next" button
     Then return to primary flow from integration flow from dropdown
 
-    When configure condition on position 4
+    When configure condition on position 3
     And add integration step on position "0"
     And select the "PostgresDB" connection
     And select "Invoke SQL" integration action
@@ -222,7 +225,7 @@ Feature: Conditional flows - content base routing
     And click on the "Next" button
     And click on the "Next" button
 
-    When configure condition on position 2
+    When configure condition on position 1
     And add integration step on position "0"
     And select the "PostgresDB" connection
     And select "Invoke SQL" integration action
@@ -230,7 +233,7 @@ Feature: Conditional flows - content base routing
     And click on the "Next" button
     And return to primary flow from integration flow directly
 
-    When configure condition on position 3
+    When configure condition on position 2
     And add integration step on position "0"
     And select the "PostgresDB" connection
     And select "Invoke SQL" integration action
@@ -238,7 +241,7 @@ Feature: Conditional flows - content base routing
     And click on the "Next" button
     And return to primary flow from integration flow directly
 
-    When configure condition on position 4
+    When configure condition on position 3
     And add integration step on position "0"
     And select the "PostgresDB" connection
     And select "Invoke SQL" integration action
@@ -371,7 +374,7 @@ Feature: Conditional flows - content base routing
     And click on the "Next" button
     And click on the "Next" button
 
-    When configure condition on position 2
+    When configure condition on position 1
     And add integration step on position "0"
     And select the "PostgresDB" connection
     And select "Invoke SQL" integration action
@@ -379,7 +382,7 @@ Feature: Conditional flows - content base routing
     And click on the "Next" button
     Then return to primary flow from integration flow from dropdown
 
-    When configure condition on position 3
+    When configure condition on position 2
     And add integration step on position "0"
     And select the "PostgresDB" connection
     And select "Invoke SQL" integration action
@@ -387,7 +390,7 @@ Feature: Conditional flows - content base routing
     And click on the "Next" button
     Then return to primary flow from integration flow from dropdown
 
-    When configure condition on position 4
+    When configure condition on position 3
     And add integration step on position "0"
     And select the "PostgresDB" connection
     And select "Invoke SQL" integration action
@@ -408,7 +411,7 @@ Feature: Conditional flows - content base routing
     And click on the "Next" button
     And click on the "Next" button
 
-    When configure condition on position 6
+    When configure condition on position 5
     And add integration step on position "0"
     And select the "PostgresDB" connection
     And select "Invoke SQL" integration action
@@ -416,7 +419,7 @@ Feature: Conditional flows - content base routing
     And click on the "Next" button
     Then return to primary flow from integration flow from dropdown
 
-    When configure condition on position 7
+    When configure condition on position 6
     And add integration step on position "0"
     And select the "PostgresDB" connection
     And select "Invoke SQL" integration action
@@ -424,7 +427,7 @@ Feature: Conditional flows - content base routing
     And click on the "Next" button
     Then return to primary flow from integration flow from dropdown
 
-    When configure condition on position 8
+    When configure condition on position 7
     And add integration step on position "0"
     And select the "PostgresDB" connection
     And select "Invoke SQL" integration action
@@ -493,7 +496,7 @@ Feature: Conditional flows - content base routing
     And click on the "Next" button
     And click on the "Next" button
 
-    When configure condition on position 2
+    When configure condition on position 1
     Then validate conditional flow dropdown content
       | Conditional WHEN ${body.message} == 'Shaco' |
       | Conditional WHEN ${body.message} == 'Clone' |
@@ -512,7 +515,7 @@ Feature: Conditional flows - content base routing
     And click on the "Next" button
     And click on the "Next" button
 
-    When configure condition on position 6
+    When configure condition on position 5
     Then validate conditional flow dropdown content
       | Conditional WHEN ${body.message} == 'Shaco'  |
       | Conditional WHEN ${body.message} == 'Clone'  |
@@ -536,7 +539,7 @@ Feature: Conditional flows - content base routing
       | {"greeting":"Hi"} |
     And click on the "Next" button
 
-    When configure condition on position 2
+    When configure condition on position 1
     And add a data mapping step - open datamapper
     And create data mapper mappings
       | message | greeting |

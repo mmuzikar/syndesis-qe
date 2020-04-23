@@ -20,7 +20,7 @@ public class OperationsList extends RowList {
     }
 
     private static final class Element {
-        public static final By TITLE = ByUtils.dataTestId("operation-method");
+        public static final By VERB = ByUtils.dataTestId("operation-method");
         public static final By STATUS = By.cssSelector(".list-pf-additional-content div");
         public static final By DESCRIPTION = ByUtils.dataTestId("operation-description");
         public static final By PATH = ByUtils.dataTestId("operation-path");
@@ -31,8 +31,9 @@ public class OperationsList extends RowList {
     }
 
     public String getVerb(String operationName) {
-        return getItem(operationName).$(Element.DESCRIPTION).shouldBe(visible).getText().trim();
+        return getItem(operationName).$(Element.VERB).shouldBe(visible).getText().trim();
     }
+
 
     public String getUrl(String operationName) {
         return getItem(operationName).$(Element.PATH).shouldBe(visible).getText().trim();

@@ -43,7 +43,7 @@ public class IntegrationFlowView extends SyndesisPageObject {
 
         public static final By FLOW_TITLE = By.cssSelector(".step.start .step-name");
 
-        public static final By TRASH = By.className("fa-trash");
+        public static final By TRASH = ByUtils.dataTestId("integration-editor-step-adder-delete-button");
 
         public static final By DELETE_BUTTON = ByUtils.dataTestId("integration-editor-step-adder-delete-button");
 

@@ -3,6 +3,7 @@
 @ui
 @database
 @integrations-check-starting-status
+@ENTESB-13530
 Feature: Integration - Status
 
   Background: Clean application state
