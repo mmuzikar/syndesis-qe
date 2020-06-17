@@ -94,6 +94,13 @@ public class Syndesis implements Resource {
         installCluster();
         grantPermissions();
         deployOperator();
+
+        deployCrAndRoutes();
+    }
+
+    public void deployCrAndRoutes() {
+        log.info("Deploying Syndesis CR");
+
         deploySyndesisViaOperator();
         changeRuntime(TestConfiguration.syndesisRuntime());
         checkRoute();
@@ -477,19 +484,13 @@ public class Syndesis implements Resource {
         List<HasMetadata> finalResourceList = resourceList;
         OpenShiftUtils.asRegularUser(() -> OpenShiftUtils.getInstance().resourceList(finalResourceList).createOrReplace());
 
-        Map<String, String> imagesEnvVars = new HashMap<>();
+        Map<String, String> imagesEnvVars = null;
         // For upgrade, we want to override images only for "current" version
         if (operatorImage.equals(TestConfiguration.syndesisOperatorImage())) {
-            Set<Image> images = EnumSet.allOf(Image.class);
-            for (Image image : images) {
-                if (TestConfiguration.image(image) != null) {
-                    log.info("Will override " + image.name().toLowerCase() + " image with " + TestConfiguration.image(image));
-                    imagesEnvVars.put("RELATED_IMAGE_" + image.name(), TestConfiguration.image(image));
-                }
-            }
+            imagesEnvVars = generateImageEnvVars();
         }
 
-        if (!imagesEnvVars.isEmpty()) {
+        if (imagesEnvVars != null && !imagesEnvVars.isEmpty()) {
             log.info("Overriding images to be deployed");
             try {
                 OpenShiftWaitUtils.waitFor(() -> OpenShiftUtils.getInstance().getDeploymentConfig(operatorResourcesName) != null);
@@ -523,6 +524,19 @@ public class Syndesis implements Resource {
             .interval(TimeUnit.SECONDS, 20)
             .timeout(TimeUnit.MINUTES, 10)
             .waitFor();
+    }
+
+    public Map<String, String> generateImageEnvVars() {
+        Map<String, String> imagesEnvVars = new HashMap<>();
+        Set<Image> images = EnumSet.allOf(Image.class);
+        for (Image image : images) {
+            if (TestConfiguration.image(image) != null) {
+                log.info("Will override " + image.name().toLowerCase() + " image with " + TestConfiguration.image(image));
+                imagesEnvVars.put("RELATED_IMAGE_" + image.name(), TestConfiguration.image(image));
+            }
+        }
+
+        return imagesEnvVars;
     }
 
     protected void deploySyndesisViaOperator() {

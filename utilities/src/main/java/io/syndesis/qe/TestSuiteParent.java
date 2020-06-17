@@ -1,7 +1,13 @@
 package io.syndesis.qe;
 
 import io.syndesis.qe.bdd.CommonSteps;
+import io.syndesis.qe.marketplace.openshift.OpenShiftConfiguration;
+import io.syndesis.qe.marketplace.openshift.OpenShiftService;
+import io.syndesis.qe.marketplace.openshift.OpenShiftUser;
+import io.syndesis.qe.marketplace.quay.QuayService;
+import io.syndesis.qe.marketplace.quay.QuayUser;
 import io.syndesis.qe.resource.ResourceFactory;
+import io.syndesis.qe.resource.impl.Syndesis;
 import io.syndesis.qe.test.InfraFail;
 import io.syndesis.qe.utils.OpenShiftUtils;
 import io.syndesis.qe.utils.TestUtils;
@@ -10,6 +16,7 @@ import io.syndesis.qe.wait.OpenShiftWaitUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
@@ -17,8 +24,14 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class TestSuiteParent {
+
     @BeforeClass
     public static void beforeTests() {
+        // do not use both deploy methods, universes will collapse
+        if (TestConfiguration.namespaceCleanup() && TestConfiguration.operatorhubDeploy()) {
+            throw new IllegalArgumentException("Connot use classic deploy method along with operatorhub deploy");
+        }
+
         // Do this check only if installing syndesis
         if (TestConfiguration.namespaceCleanup() && !TestUtils.isUserAdmin(TestConfiguration.adminUsername())) {
             throw new IllegalArgumentException("Admin user " + TestUtils.getCurrentUser()
@@ -46,10 +59,16 @@ public abstract class TestSuiteParent {
             }
         }
 
-        if (!TestConfiguration.namespaceCleanup()) {
-            return;
+        if (TestConfiguration.namespaceCleanup()) {
+            cleanAndDeploySyndesis();
         }
 
+        if (TestConfiguration.operatorhubDeploy()) {
+            deployOperatorhub();
+        }
+    }
+
+    private static void cleanAndDeploySyndesis() {
         if (OpenShiftUtils.getInstance().getProject(TestConfiguration.openShiftNamespace()) == null) {
             OpenShiftUtils.asRegularUser(() -> OpenShiftUtils.getInstance().createProjectRequest(TestConfiguration.openShiftNamespace()));
             TestUtils.sleepIgnoreInterrupt(10 * 1000L);
@@ -60,10 +79,10 @@ public abstract class TestSuiteParent {
         // @formatter:off
         Map<String, String> labels = TestUtils.map("syndesis-qe/lastUsedBy", System.getProperty("user.name"));
         OpenShiftUtils.getInstance().namespaces().withName(TestConfiguration.openShiftNamespace()).edit()
-            .editMetadata()
-            .addToLabels(labels)
-            .endMetadata()
-            .done();
+                .editMetadata()
+                .addToLabels(labels)
+                .endMetadata()
+                .done();
         // @formatter:on
 
         try {
@@ -75,6 +94,75 @@ public abstract class TestSuiteParent {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    private static void deployOperatorhub() {
+        Syndesis syndesis = ResourceFactory.get(Syndesis.class);
+
+        QuayUser quayUser = new QuayUser(
+                TestConfiguration.quayUsername(),
+                TestConfiguration.quayPassword(),
+                TestConfiguration.quayNamespace(),
+                TestConfiguration.quayAuthToken()
+        );
+
+        QuayService quayService = new QuayService(
+            quayUser,
+            TestConfiguration.syndesisOperatorImage(),
+            syndesis.generateImageEnvVars());
+        String quayProject;
+        try {
+            quayProject = quayService.createQuayProject();
+        } catch (Exception e) {
+            InfraFail.fail("Creating project on quay failed", e);
+            return;
+        }
+
+        OpenShiftUser defaultUser = new OpenShiftUser(
+                TestConfiguration.syndesisUsername(),
+                TestConfiguration.syndesisPassword(),
+                TestConfiguration.openShiftUrl()
+        );
+        OpenShiftUser adminUser = new OpenShiftUser(
+                TestConfiguration.adminUsername(),
+                TestConfiguration.adminPassword(),
+                TestConfiguration.openShiftUrl()
+        );
+        OpenShiftConfiguration openShiftConfiguration = new OpenShiftConfiguration(
+                TestConfiguration.openShiftNamespace(),
+                TestConfiguration.syndesisPullSecretName(),
+                TestConfiguration.syndesisPullSecret(),
+                TestConfiguration.quayOpsrcToken()
+        );
+        OpenShiftService openShiftService = new OpenShiftService(
+                TestConfiguration.quayNamespace(),
+                quayProject,
+                openShiftConfiguration,
+                adminUser,
+                defaultUser
+        );
+
+        try {
+            openShiftService.deployOperator();
+        } catch (IOException e) {
+            InfraFail.fail("Deploying operator with marketplace failed", e);
+        }
+
+        // at this point we don't really need operator source anymore
+        // and we doon't need project on quay either, because all the necessary stuff
+        // has already been deployed, we can delete those
+        log.info("Cleaning all unnecessary resorces");
+        openShiftService.deleteOpsrcToken();
+        openShiftService.deleteOperatorSource();
+        try {
+            quayService.deleteQuayProject();
+        } catch (IOException e) {
+            InfraFail.fail("Fail during cleanup of quay project", e);
+        }
+
+        syndesis.deployCrAndRoutes();
+        CommonSteps.waitForSyndesis();
+
     }
 
     @AfterClass

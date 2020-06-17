@@ -28,6 +28,7 @@ public class TestConfiguration {
     public static final String OPENSHIFT_NAMESPACE = "syndesis.config.openshift.namespace";
     public static final String OPENSHIFT_SAR_NAMESPACE = "syndesis.config.openshift.sar_namespace";
     public static final String OPENSHIFT_NAMESPACE_CLEANUP = "syndesis.config.openshift.namespace.cleanup";
+    public static final String OPENSHIFT_OPERATORHUB_DEPLOY = "syndesis.config.openshift.operatorhub.deploy";
     public static final String OPENSHIFT_ROUTE_SUFFIX = "syndesis.config.openshift.route.suffix";
 
     public static final String SYNDESIS_SINGLE_USER = "syndesis.config.single.user";
@@ -95,6 +96,12 @@ public class TestConfiguration {
     private static final String CAMEL_VERSION = "camel.version";
 
     private static final String SYNDESIS_APPEND_REPOSITORY = "syndesis.config.append.repository";
+
+    private static final String QUAY_USERNAME = "syndesis.config.quay.username";
+    private static final String QUAY_PASSWORD = "syndesis.config.quay.password";
+    private static final String QUAY_NAMESPACE = "syndesis.config.quay.namespace";
+    private static final String QUAY_AUTH_TOKEN = "syndesis.config.quay.auth.token";
+    private static final String QUAY_OPSRC_TOKEN = "syndesis.config.quay.opsrc.token";
 
     private static final TestConfiguration INSTANCE = new TestConfiguration();
 
@@ -261,6 +268,10 @@ public class TestConfiguration {
         return Boolean.parseBoolean(get().readValue(OPENSHIFT_NAMESPACE_CLEANUP));
     }
 
+    public static boolean operatorhubDeploy() {
+        return Boolean.parseBoolean(get().readValue(OPENSHIFT_OPERATORHUB_DEPLOY));
+    }
+
     public static boolean useServerRoute() {
         return Boolean.parseBoolean(get().readValue(SYNDESIS_SERVER_ROUTE));
     }
@@ -349,6 +360,26 @@ public class TestConfiguration {
         return Boolean.parseBoolean(get().readValue(SYNDESIS_APPEND_REPOSITORY, "false"));
     }
 
+    public static String quayUsername() {
+        return get().readValue(QUAY_USERNAME);
+    }
+
+    public static String quayPassword() {
+        return get().readValue(QUAY_PASSWORD);
+    }
+
+    public static String quayNamespace() {
+        return get().readValue(QUAY_NAMESPACE);
+    }
+
+    public static String quayAuthToken() {
+        return get().readValue(QUAY_AUTH_TOKEN);
+    }
+
+    public static String quayOpsrcToken() {
+        return get().readValue(QUAY_OPSRC_TOKEN);
+    }
+
     private Properties defaultValues() {
         final Properties defaultProps = new Properties();
 
@@ -363,6 +394,7 @@ public class TestConfiguration {
         defaultProps.setProperty(SYNDESIS_UI_BROWSER, "chrome");
 
         defaultProps.setProperty(OPENSHIFT_NAMESPACE_CLEANUP, "false");
+        defaultProps.setProperty(OPENSHIFT_OPERATORHUB_DEPLOY, "false");
 
         // to keep backward compatibility
         if (properties.getProperty(SYNDESIS_URL_SUFFIX) != null && properties.getProperty(OPENSHIFT_ROUTE_SUFFIX) == null) {
