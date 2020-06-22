@@ -101,6 +101,7 @@ public class Syndesis implements Resource {
     public void deployCrAndRoutes() {
         log.info("Deploying Syndesis CR");
 
+        grantPermissions();
         deploySyndesisViaOperator();
         changeRuntime(TestConfiguration.syndesisRuntime());
         checkRoute();
